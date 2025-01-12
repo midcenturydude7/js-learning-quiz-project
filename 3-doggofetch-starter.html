@@ -99,7 +99,9 @@
       // Use a while loop and the getRandomElement() function
       while (choices.length < n) {
         let candidate = getRandomElement(array);
-        !choices.includes(candidate) ? choices.push(candidate) : null;
+        if (choices.includes(candidate)) {
+            choices.push(candidate);
+        }
       }
       return shuffleArray(choices);
     }

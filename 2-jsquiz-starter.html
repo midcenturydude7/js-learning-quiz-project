@@ -47,6 +47,7 @@
         .correct {
             background-color: lightgreen;
         }
+        
         .incorrect {
             background-color: lightpink;
         }
@@ -67,9 +68,7 @@
         <button name="false" value="false">false</button>
     </div>
 
-    <div id="explanation">
-
-    </div>
+    <div id="explanation"></div>
 
     </main>
 
@@ -115,7 +114,7 @@
     for (let button of optionButtons) {
         button.addEventListener("click", () => {
             // TODO 6B: Within the event handler function, display the fact's explanation by setting the text of the explanation element
-            console.log(fact.explanation);
+            <!-- console.log(fact.explanation); -->
             explanation.textContent = fact.explanation
 
             // TODO 7: Within the event handler function,

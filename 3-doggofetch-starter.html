@@ -1,56 +1,56 @@
 <!DOCTYPE html>
 <html lang="en-US">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Doggo Fetch</title>
-        <style>
-            body {
-                margin: 1rem auto;
-                padding: 3rem;
-                font-family: sans-serif;
-            }
-            header {
-                width: 70%;
-                margin: 1em auto;
-            }
-            main {
-                max-width: 70%;
-                margin: 0px auto;
-                display:flex; 
-                flex-direction: column;
-            }
-            img {
-                max-width: 100%;
-            }
-            #image-frame {
-                font-size: x-large;
-                text-align: center;
-                margin: 1rem auto;
-            }
-            #explanation, #score {
-                padding: 1rem;
-                text-align: center;
-            }
-            #options {
-                max-width: 100%;
-                display: flex;
-                flex-direction: column;
-            }
-            button {
-                padding: 0.5rem;
-                font-size: medium;
-                border-radius: 5px;
-            }
-            .correct {
-                background-color: lightgreen;
-            }
-            .incorrect {
-                background-color: lightpink;
-            }
-            .hidden {
-                display: none;
-            }
-        </style>
+    <meta charset="utf-8">
+    <title>Doggo Fetch</title>
+    <style>
+        body {
+            margin: 1rem auto;
+            padding: 3rem;
+            font-family: sans-serif;
+        }
+        header {
+            width: 70%;
+            margin: 1em auto;
+        }
+        main {
+            max-width: 70%;
+            margin: 0px auto;
+            display:flex; 
+            flex-direction: column;
+        }
+        img {
+            max-width: 100%;
+        }
+        #image-frame {
+            font-size: x-large;
+            text-align: center;
+            margin: 1rem auto;
+        }
+        #explanation, #score {
+            padding: 1rem;
+            text-align: center;
+        }
+        #options {
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        button {
+            padding: 0.5rem;
+            font-size: medium;
+            border-radius: 5px;
+        }
+        .correct {
+            background-color: lightgreen;
+        }
+        .incorrect {
+            background-color: lightpink;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
     </head>
     <body>
         <header>
@@ -90,13 +90,13 @@
     // Given an array of possible answers, a correct answer value, and a number of choices to get,
     // return a list of that many choices, including the correct answer and others from the array
     function getMultipleChoices(n, correctAnswer, array) {
-        const choices = [correctAnswer];
-        choices.push(correctAnswer);
         // Use a while loop and the getRandomElement() function
+        // Make sure there are no duplicates in the array
+        const choices = [correctAnswer];
         while (choices.length < n) {
-        let candidate = getRandomElement(array);
-        if (choices.indexOf(candidate) < 0) {
-            choices.push(candidate);
+            let candidate = getRandomElement(array);
+            if (choices.indexOf(candidate) < 0) { // check if this is already in the array
+                choices.push(candidate); // if not, add it
             }
         }
         return shuffleArray(choices);
@@ -115,8 +115,9 @@
         return [subtype, breed].join(" ");
     }
 
+
     // TODO 3
-    // Given a URL, fetch the resource at that URL,
+    // Given a URL, fetch the resource at that URL, 
     // then parse the response as a JSON object,
     // finally return the "message" property of its body
     async function fetchMessage(url) {
@@ -179,7 +180,7 @@
     // Asynchronously call the loadQuizData() function,
     const [imgUrl, correctAnswer, choices] = await loadQuizData();
     // Then call renderQuiz() with the returned imageUrl, correctAnswer, and choices
-    renderQuiz(imageUrl, correctAnswer, choices);
+    renderQuiz(imgUrl, correctAnswer, choices);
     </script>
 
 </html>

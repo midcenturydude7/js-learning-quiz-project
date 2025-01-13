@@ -1,76 +1,75 @@
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Doggo Fetch</title>
-    <style>
-        body {
-            margin: 1rem auto;
-            padding: 3rem;
-            font-family: sans-serif;
-        }
-        header {
-            width: 70%;
-            margin: 1em auto;
-        }
-        main {
-            max-width: 70%;
-            margin: 0px auto;
-            display:flex; 
-            flex-direction: column;
-        }
-        img {
-            max-width: 100%;
-        }
-        #image-frame {
-            font-size: x-large;
-            text-align: center;
-            margin: 1rem auto;
-        }
-        #explanation, #score {
-            padding: 1rem;
-            text-align: center;
-        }
-        #options {
-            max-width: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        button {
-            padding: 0.5rem;
-            font-size: medium;
-            border-radius: 5px;
-        }
-        .correct {
-            background-color: lightgreen;
-        }
-        .incorrect {
-            background-color: lightpink;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
-  </head>
-  <body>
-    <header>
-    <h1>Guess the Doggo</h1>
-    <p>What breed is the dog in this image?</p>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Doggo Fetch</title>
+        <style>
+            body {
+                margin: 1rem auto;
+                padding: 3rem;
+                font-family: sans-serif;
+            }
+            header {
+                width: 70%;
+                margin: 1em auto;
+            }
+            main {
+                max-width: 70%;
+                margin: 0px auto;
+                display:flex; 
+                flex-direction: column;
+            }
+            img {
+                max-width: 100%;
+            }
+            #image-frame {
+                font-size: x-large;
+                text-align: center;
+                margin: 1rem auto;
+            }
+            #explanation, #score {
+                padding: 1rem;
+                text-align: center;
+            }
+            #options {
+                max-width: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            button {
+                padding: 0.5rem;
+                font-size: medium;
+                border-radius: 5px;
+            }
+            .correct {
+                background-color: lightgreen;
+            }
+            .incorrect {
+                background-color: lightpink;
+            }
+            .hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+        <h1>Guess the Doggo</h1>
+        <p>What breed is the dog in this image?</p>
 
-    </header>
+        </header>
 
-    <main>
-    <div id="image-frame">
-    </div>
-    <div id="options">
-    </div>
+        <main>
+        <div id="image-frame">
+        </div>
+        <div id="options">
+        </div>
 
-    </main>
+        </main>
+    
+    </body>
 
-  
-
-
-  <script type="module">
+    <script type="module">
 
     const RANDOM_IMG_ENDPOINT = "https://dog.ceo/api/breeds/image/random";
 
@@ -87,18 +86,16 @@
         return array.sort((a,b) => Math.random() - 0.5);
     }
 
-
-
     // TODO 1
     // Given an array of possible answers, a correct answer value, and a number of choices to get,
     // return a list of that many choices, including the correct answer and others from the array
     function getMultipleChoices(n, correctAnswer, array) {
-        const choices = [];
+        const choices = [correctAnswer];
         choices.push(correctAnswer);
         // Use a while loop and the getRandomElement() function
         while (choices.length < n) {
         let candidate = getRandomElement(array);
-        if (choices.includes(candidate)) {
+        if (choices.indexOf(candidate) < 0) {
             choices.push(candidate);
             }
         }
@@ -112,9 +109,10 @@
     function getBreedFromURL(url) {
         // The string method .split(char) may come in handy
         // Try to use destructuring as much as you can
-        let unsplitBreed = url.split("/")[4];
-        let [breed, subbreed] = unsplitBreed.split("-");
-        return [subbreed, breed].join(" ").trim();
+        const [,path] = url.split("/breeds/");
+        const [breedID] = path.split("/");
+        const [breed, subtype] = breedID.split("-");
+        return [subtype, breed].join(" ");
     }
 
     // TODO 3
@@ -122,9 +120,9 @@
     // then parse the response as a JSON object,
     // finally return the "message" property of its body
     async function fetchMessage(url) {
-        const response = await fetch(url);
-        const body = await response.json();
-        const { message } = body;
+        const response = await fetch(url);  // Fetch the resource at the given URL
+        const {message} = await response.json(); // Parse the response as JSON & remember its 'message' value
+        return message; // Return the message
     }
 
     // Function to add the multiple-choice buttons to the page
@@ -145,19 +143,13 @@
 
         // TODO 4
         // For each of the choices in choicesArray,
-        for (let choice of choicesArray) {
-            // Create a button element whose name, value, and textContent properties are the value of that choice
-            const button = document.createElement("button");
-            button.textContent = choice;
-            button.value = choice;
-            button.name = choice;
-            // attach a "click" event listener with the buttonHandler function,
+        choicesArray.map(choice => {
+            let button = document.createElement("button");
+            button.value = button.name = button.textContent = choice;
             button.addEventListener("click", buttonHandler);
-            // and append the button as a child of the options element
             options.appendChild(button);
-        }
+        })
     }
-
 
     // Function to add the quiz content to the page
     function renderQuiz(imgUrl, correctAnswer, choices) {
@@ -169,7 +161,8 @@
             // Wait until the image has finished loading before trying to add elements to the page
             frame.replaceChildren(image);
             renderButtons(choices, correctAnswer);
-        })    }
+        })
+    }
 
     // Function to load the data needed to display the quiz
     async function loadQuizData() {
@@ -184,8 +177,9 @@
 
     // TODO 5
     // Asynchronously call the loadQuizData() function,
+    const [imgUrl, correctAnswer, choices] = await loadQuizData();
     // Then call renderQuiz() with the returned imageUrl, correctAnswer, and choices
+    renderQuiz(imageUrl, correctAnswer, choices);
+    </script>
 
-  </script>
-
-</body></html>
+</html>
